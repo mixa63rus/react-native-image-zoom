@@ -351,7 +351,7 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
                 // 越到下方，缩放越小
                 this.scale = this.scale - diffY / 10000;
                 this.animatedScale.setValue(this.scale);
-                this.animatedOpacity.setValue(this.scale * 0.8);
+                this.animatedOpacity.setValue(this.scale * 10);
               }
             }
           }
@@ -629,6 +629,11 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
         duration,
         useNativeDriver: !!this.props.useNativeDriver,
       }),
+      Animated.timing(this.animatedOpacity, {
+        toValue: this.opacity,
+        duration,
+        useNativeDriver: !!this.props.useNativeDriver,
+      }),
     ]).start(() => {
       this.imageDidMove('centerOn');
     });
@@ -653,12 +658,11 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
     this.animatedPositionX.setValue(this.positionX);
     this.positionY = 0;
     this.animatedPositionY.setValue(this.positionY);
-    this.animatedOpacity.setValue(this.opacity);
+    this.animatedOpacity.setValue(1);
   }
 
   public render(): React.ReactNode {
     const animateConf = {
-      opacity: this.opacity,
       transform: [
         {
           scale: this.animatedScale,
@@ -672,14 +676,19 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
       ],
     };
 
+    const animatedStyle = {
+      opacity: this.animatedOpacity,
+    };
+
     const parentStyles = StyleSheet.flatten(this.props.style);
     return (
-      <View
+      <Animated.View
         style={{
           ...styles.container,
           ...parentStyles,
           width: this.props.cropWidth,
           height: this.props.cropHeight,
+          animatedStyle,
         }}
         {...this.imagePanResponder.panHandlers}
       >
@@ -694,7 +703,7 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
             {this.props.children}
           </View>
         </Animated.View>
-      </View>
+      </Animated.View>
     );
   }
 }
