@@ -347,7 +347,7 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
                 this.animatedPositionY.setValue(this.positionY);
 
                 // 越到下方，缩放越小
-                this.scale = this.scale - diffY / 1000;
+                this.scale = this.scale - diffY / 10000;
                 this.animatedScale.setValue(this.scale);
               }
             }
