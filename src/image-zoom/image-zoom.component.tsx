@@ -23,6 +23,8 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
   private zoomLastDistance: number | null = null;
   private zoomCurrentDistance = 0;
   private defaultScale = this.props.minScale || 0;
+  private opacity = 1;
+  private animatedOpacity = new Animated.Value(1);
 
   // 上次手按下去的时间
   private lastTouchStartTime = 0;
@@ -349,6 +351,7 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
                 // 越到下方，缩放越小
                 this.scale = this.scale - diffY / 10000;
                 this.animatedScale.setValue(this.scale);
+                this.animatedOpacity.setValue(this.scale * 0.8);
               }
             }
           }
@@ -650,10 +653,12 @@ export default class ImageViewer extends React.Component<ImageZoomProps, ImageZo
     this.animatedPositionX.setValue(this.positionX);
     this.positionY = 0;
     this.animatedPositionY.setValue(this.positionY);
+    this.animatedOpacity.setValue(this.opacity);
   }
 
   public render(): React.ReactNode {
     const animateConf = {
+      opacity: this.opacity,
       transform: [
         {
           scale: this.animatedScale,
